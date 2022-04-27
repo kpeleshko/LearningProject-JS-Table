@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./style.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TASK 3</title>
+</head>
+<body>
+    <header>
+        <h1>Table Editor</h1>
+    </header>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Availability</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- <tr>
+                <th>1</th>
+                <td>Some Name</td>
+                <td>1</td>
+                <td>no</td>
+                <td>
+                    <input type="checkbox">
+                </td>
+            </tr> -->
+        </tbody>
+    </table>
+
+    <button id="generate-row">Generate</button>
+    
+    <form action="">
+        <label for="">Name
+            <input type="text" name='name'>
+        </label>
+
+        <label for="">Qty
+            <input type="text" name="qty">
+        </label>
+
+        <label for="">Availability
+            <input type="checkbox" name="availability">
+        </label>
+
+        <button type="submit" id="add-row">Add row</button>
+    </form>
+
+    <script src="./app.js"></script>
+</body>
+</html>
