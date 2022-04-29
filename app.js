@@ -5,12 +5,18 @@ let data = [
 ];
 
 const table = document.querySelector('#table-body');
+const form = document.querySelector('#form-add-rows');
+const addNewRowBtn = document.querySelector('#add-new-row');
 const addRowBtn = document.querySelector('#add-row');
 const generateDataBtn = document.querySelector('#generate-row');
+const deleteRowBtn = document.querySelector('#delete-row');
+const clearTableBtn = document.querySelector('#clear-table');
 const inputName = document.querySelector("[name=name]");
 const inputQty = document.querySelector("[name=qty]");
 const inputAvailability = document.querySelector("[name=availability]");
+
 let rowsNumber = 0;
+let itemsToDelete = [];
 
 function generateTable(table, data) {
     for (let element of data) {
@@ -35,9 +41,10 @@ function generateRow(table, element) {
         } 
 
         if (key === 'delete') {
-            let deleteCheckbox = document.createElement('input');
-            text.textContent = ''
-            deleteCheckbox.setAttribute('type', 'checkbox');
+            let deleteCheckbox = document.createElement('label');
+            text.textContent = '';
+            deleteCheckbox.classList.add('delete-checkbox');
+            deleteCheckbox.innerHTML = '<input type="checkbox"><i class="fa-solid fa-trash"></i>';
             cell.appendChild(deleteCheckbox);
         }
 
@@ -55,14 +62,13 @@ function addRow(event) {
     newRowData.availability = inputAvailability.checked;
     newRowData.delete = false;
 
+    inputName.value = '';
+    inputQty.value = '';
+    inputAvailability.checked = false;
+
     data.push(newRowData);
     generateRow(table, newRowData);
 }
-
-function generateData () {
-    let randomNumber = Math.floor(Math.random() * 11);
-    for(i=0; i<randomNumber; i++) addRandomRow();
-};
 
 function addRandomRow() {
     newRowData = {};
@@ -76,9 +82,44 @@ function addRandomRow() {
     generateRow(table, newRowData);
 }
 
+function generateData () {
+    let randomNumber = Math.floor(Math.random() * 11);
+    for(i=0; i<randomNumber; i++) addRandomRow();
+};
+
+function tableClickHandler(event) {
+    const item = event.target;
+
+    if(item.checked) {
+        item.parentElement.parentElement.parentElement.classList.add('tr-checked');
+        itemsToDelete.push(item);
+    } else {
+        item.parentElement.parentElement.parentElement.classList.remove('tr-checked');
+    }
+}
+
+function deleteRows() {
+    itemsToDelete.forEach(item => {
+        item.parentElement.parentElement.parentElement.remove()
+        data.splice(item, 1);
+    })
+    itemsToDelete = [];
+}
+
+function clearTable() {
+    data = [];
+    table.innerHTML = '';
+}
+
+function showForm() {
+    form.classList.toggle('visible')
+}
 
 generateTable(table, data);
 
-
+addNewRowBtn.addEventListener('click', showForm);
 addRowBtn.addEventListener('click', addRow);
 generateDataBtn.addEventListener('click', generateData);
+deleteRowBtn.addEventListener('click', deleteRows);
+clearTableBtn.addEventListener('click', clearTable);
+table.addEventListener('click', tableClickHandler);

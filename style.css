@@ -7,8 +7,8 @@ body {
     margin: 0 auto;
     max-width: 750px;
     min-height: 100vh;
-    background: linear-gradient(120deg, #65a9f6, #85cdfd);
-    color: white;
+    background: linear-gradient(120deg, #65a9f6, #949CFF);
+    color: #fff;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -33,10 +33,38 @@ table, th, td {
     border: 1px solid;
 }
 
+.tr-checked {
+    background-color: rgba(248, 69, 137, .15);
+}
+
+.delete-checkbox {
+    transition: all .2s ease-in-out;
+}
+
+.delete-checkbox input {
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.delete-checkbox:hover i {
+    color: #f84589;
+    transform: scale(1.2);
+}
+
+.delete-checkbox input:checked + i {
+    color: #FF6FA6;
+}
+
 form {
-    display: flex;
+    display: none;
     flex-direction: column;
     font-weight: 200;
+}
+
+form.visible {
+    display: flex;
 }
 
 form input {
@@ -52,17 +80,21 @@ form input {
 
 button {
     margin-bottom: 50px;
+    margin-right: 10px;
     max-width: max-content;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
     border: none;
+    border-radius: 2px;
+    color: #fff;
+    background-color: #FF6FA6;
     outline: none;
     transition: background-color .2s ease;
 }
 
-form button {
-    background: #65a9f6;
-    color: white;
+button:hover {
+    background-color: #f84589;
 }
 
 form button:hover {
