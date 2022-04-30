@@ -4,8 +4,9 @@ let data = [
     {id: 3, name: 'some', qty: 3, availability: false, delete: true},
 ];
 
-const table = document.querySelector('#table-body');
+const table = document.getElementById('table-body');
 const form = document.querySelector('#form-add-rows');
+const searchInput = document.querySelector('#search-input');
 const addNewRowBtn = document.querySelector('#add-new-row');
 const addRowBtn = document.querySelector('#add-row');
 const generateDataBtn = document.querySelector('#generate-row');
@@ -33,6 +34,7 @@ function generateRow(table, element) {
 
         if (key === 'id') {
             text.textContent = rowsNumber;
+            row.setAttribute('data-id', element.id);
         }
 
         if (key === 'availability') {
@@ -47,7 +49,7 @@ function generateRow(table, element) {
             deleteCheckbox.innerHTML = '<input type="checkbox"><i class="fa-solid fa-trash"></i>';
             cell.appendChild(deleteCheckbox);
         }
-
+        
         cell.appendChild(text);
     }
 } 
@@ -89,7 +91,6 @@ function generateData () {
 
 function tableClickHandler(event) {
     const item = event.target;
-
     if(item.checked) {
         item.parentElement.parentElement.parentElement.classList.add('tr-checked');
         itemsToDelete.push(item);
@@ -115,6 +116,19 @@ function showForm() {
     form.classList.toggle('visible')
 }
 
+function searchTable(event) {
+    let enteredValue = event.target.value;
+    console.log(enteredValue);
+
+    for (let i = 0; i < table.children.length; i++) {
+       if (!table.children[i].children[1].textContent.includes(enteredValue) && enteredValue) {
+            table.children[i].hidden = true
+       } else {
+            table.children[i].hidden = false
+       }
+    }
+}
+
 generateTable(table, data);
 
 addNewRowBtn.addEventListener('click', showForm);
@@ -123,3 +137,4 @@ generateDataBtn.addEventListener('click', generateData);
 deleteRowBtn.addEventListener('click', deleteRows);
 clearTableBtn.addEventListener('click', clearTable);
 table.addEventListener('click', tableClickHandler);
+searchInput.addEventListener('keyup', searchTable);

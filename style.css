@@ -100,3 +100,26 @@ button:hover {
 form button:hover {
     background: #85cdfd;
 }
+
+.hide {
+    display: none;
+}
+
+.search {
+    position: relative;
+}
+
+.search-input-icon {
+    position: absolute;
+    bottom: 2px;
+    left: 0px;
+}
+
+.search-input {
+    padding: 5px 10px 5px 25px;
+    border: none;
+    border-bottom: 2px solid #fff;
+    outline: none;
+    background-color: transparent;
+    color: #fff;
+}
