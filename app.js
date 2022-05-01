@@ -2,6 +2,9 @@ let data = [
     {id: 1, name: 'some', qty: 1, availability: false, delete: true},
     {id: 2, name: 'some', qty: 2, availability: true, delete: false},
     {id: 3, name: 'some', qty: 3, availability: false, delete: true},
+    {id: 4, name: 'some', qty: 1, availability: false, delete: true},
+    {id: 5, name: 'some', qty: 2, availability: true, delete: false},
+    {id: 6, name: 'some', qty: 3, availability: false, delete: true},
 ];
 
 const table = document.getElementById('table-body');
@@ -19,11 +22,81 @@ const inputAvailability = document.querySelector("[name=availability]");
 let rowsNumber = 0;
 let itemsToDelete = [];
 
-function generateTable(table, data) {
-    for (let element of data) {
-        generateRow(table, element);
+let state = {
+    'querySet': data,
+    'page': 1,
+    'rows': 5,
+    'window': 5,
+}
+
+function pagination(querySet, page, rows) {
+    let trimStart = (page - 1) * rows;
+    let trimEnd = trimStart + rows;
+    let trimmedData = querySet.slice(trimStart, trimEnd);
+    let pages = Math.ceil(querySet.length / rows);
+    return {
+        'querySet': trimmedData,
+        'pages': pages,
     }
 }
+
+function pageButtons(pages) {
+    let wrapper = document.getElementById('pagination-wrapper');
+
+    wrapper.innerHTML = '';
+
+    let maxLeft = (state.page - Math.floor(state.window / 2));
+    let maxRight = (state.page + Math.floor(state.window / 2));
+
+    if (maxLeft < 1) {
+        maxLeft = 1;
+        maxRight = state.window;
+    }
+
+    if (maxRight > pages) {
+        maxLeft = pages - (state.window - 1);
+        
+        if (maxLeft < 1){
+        	maxLeft = 1;
+        }
+        maxRight = pages;
+    }
+    
+
+    for (let page = maxLeft; page <= maxRight; page++) {
+    	wrapper.innerHTML += `<button value=${page} class="btn">${page}</button>`
+    }
+
+    if (state.page != 1) {
+        wrapper.innerHTML = `<button value=${1} class="btn">&#171; First</button>` + wrapper.innerHTML
+    }
+
+    if (state.page != pages) {
+        wrapper.innerHTML += `<button value=${pages} class="btn">Last &#187;</button>`
+    }
+
+    let paginationBtns = document.querySelectorAll('.btn');
+
+    paginationBtns.forEach(button => {
+        button.addEventListener('click', function() {
+            table.innerHTML ='';
+            state.page = Number(button.value);
+            generateTable(table);
+        })
+    })
+}
+
+function generateTable(table) {
+    let data = pagination(state.querySet, state.page, state.rows);
+
+    for (let element of data.querySet) {
+        generateRow(table, element);
+    }
+
+    pageButtons(data.pages);
+}
+
+generateTable(table);
 
 function generateRow(table, element) {
     rowsNumber++;
@@ -33,7 +106,6 @@ function generateRow(table, element) {
         let text = document.createTextNode(element[key]);
 
         if (key === 'id') {
-            text.textContent = rowsNumber;
             row.setAttribute('data-id', element.id);
         }
 
@@ -49,7 +121,7 @@ function generateRow(table, element) {
             deleteCheckbox.innerHTML = '<input type="checkbox"><i class="fa-solid fa-trash"></i>';
             cell.appendChild(deleteCheckbox);
         }
-        
+
         cell.appendChild(text);
     }
 } 
@@ -58,7 +130,7 @@ function addRow(event) {
     event.preventDefault();
 
     newRowData = {};
-    newRowData.id = 1;
+    newRowData.id = data.length + 1;
     newRowData.name = inputName.value;
     newRowData.qty = inputQty.value;
     newRowData.availability = inputAvailability.checked;
@@ -74,19 +146,20 @@ function addRow(event) {
 
 function addRandomRow() {
     newRowData = {};
-    newRowData.id = 1;
+    newRowData.id = data.length + 1;
     newRowData.name = Math.random().toString(36).substring(2, 15);
     newRowData.qty = Math.floor(Math.random() * 1001);
     newRowData.availability = Math.random() < 0.5;
     newRowData.delete = false;
 
     data.push(newRowData);
-    generateRow(table, newRowData);
 }
 
 function generateData () {
     let randomNumber = Math.floor(Math.random() * 11);
     for(i=0; i<randomNumber; i++) addRandomRow();
+    table.innerHTML = '';
+    generateTable(table)
 };
 
 function tableClickHandler(event) {
@@ -128,8 +201,6 @@ function searchTable(event) {
        }
     }
 }
-
-generateTable(table, data);
 
 addNewRowBtn.addEventListener('click', showForm);
 addRowBtn.addEventListener('click', addRow);
