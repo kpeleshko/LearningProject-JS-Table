@@ -18,24 +18,55 @@ const clearTableBtn = document.querySelector('#clear-table');
 const inputName = document.querySelector("[name=name]");
 const inputQty = document.querySelector("[name=qty]");
 const inputAvailability = document.querySelector("[name=availability]");
+const columnHeaders = document.querySelectorAll("[data-sort-type]");
+
+columnHeaders.forEach(columnHeader => {
+    columnHeader.addEventListener('click', () => {
+        let dataType = columnHeader.getAttribute('data-sort-type');
+        let dataDirection = columnHeader.getAttribute('data-sort-direction');
+
+        columnHeaders.forEach(columnHeader => {
+            columnHeader.lastChild.classList.remove('fa-angle-up');
+            columnHeader.lastChild.classList.add('fa-angle-down');
+        })
+
+        if(dataDirection ===  "up") {
+            data.sort((a, b) => a[dataType] - b[dataType]);
+            columnHeader.setAttribute("data-sort-direction", "down");
+            columnHeader.lastChild.classList.remove('fa-angle-down');
+            columnHeader.lastChild.classList.add('fa-angle-up');
+
+            table.innerHTML = '';
+            generateTable(table)
+
+        } else if(dataDirection ===  "down") {
+            data.sort((a, b) => b[dataType] - a[dataType]);
+            columnHeader.setAttribute("data-sort-direction", "up");
+            columnHeader.lastChild.classList.remove('fa-angle-up');
+            columnHeader.lastChild.classList.add('fa-angle-down');
+
+            table.innerHTML = '';
+            generateTable(table)
+        }
+    })
+})
 
 let rowsNumber = 0;
 let itemsToDelete = [];
 
 let state = {
-    'querySet': data,
     'page': 1,
     'rows': 5,
     'window': 5,
 }
 
-function pagination(querySet, page, rows) {
+function pagination(data, page, rows) {
     let trimStart = (page - 1) * rows;
     let trimEnd = trimStart + rows;
-    let trimmedData = querySet.slice(trimStart, trimEnd);
-    let pages = Math.ceil(querySet.length / rows);
+    let trimmedData = data.slice(trimStart, trimEnd);
+    let pages = Math.ceil(data.length / rows);
     return {
-        'querySet': trimmedData,
+        'data': trimmedData,
         'pages': pages,
     }
 }
@@ -87,13 +118,13 @@ function pageButtons(pages) {
 }
 
 function generateTable(table) {
-    let data = pagination(state.querySet, state.page, state.rows);
+    let data1 = pagination(data, state.page, state.rows);
 
-    for (let element of data.querySet) {
+    for (let element of data1.data) {
         generateRow(table, element);
     }
 
-    pageButtons(data.pages);
+    pageButtons(data1.pages);
 }
 
 generateTable(table);
@@ -173,11 +204,16 @@ function tableClickHandler(event) {
 }
 
 function deleteRows() {
+    const idsToDelete = [];
     itemsToDelete.forEach(item => {
-        item.parentElement.parentElement.parentElement.remove()
-        data.splice(item, 1);
+        idsToDelete.push(item.parentElement.parentElement.parentElement.getAttribute('data-id'))
     })
+
+    data = data.filter(item => !idsToDelete.includes(String(item.id)))
     itemsToDelete = [];
+    
+    table.innerHTML = '';
+    generateTable(table)
 }
 
 function clearTable() {
